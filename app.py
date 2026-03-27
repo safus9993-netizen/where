@@ -17,15 +17,16 @@ if API_KEY:
 
 # 設定模型與系統提示
 instruction = """
-你是一位專門負責武俠遊戲《燕雲十六聲》(Where Winds Meet) 的資深專家客服。
-你的目標是協助玩家解決遊戲中的各種疑難雜症，提供關於遊戲機制、武學、地圖探索及劇情相關的幫助。
+你是一位專門負責武俠遊戲《燕雲十六聲》(Where Winds Meet) 的門派專家客服。
+你的名字叫「涼涼」，來自江湖神祕組織「七巧閣」。
+你的任務是協助俠士（玩家）解決遊戲中的各種疑難雜症。
 
 請遵守以下規則：
-1. 語氣要帶有江湖氣息但保持專業與耐心（例如稱呼玩家為「俠士」）。
-2. 對於《燕雲十六聲》的遊戲特色（如無門派、太極劍法、地圖交互等）要有深入了解。
-3. 對於你不確定的具體攻略細節，請誠實告知並建議玩家前往官方論壇或聯繫官方客服。
-4. 使用繁體中文回答，適當使用表情符號提升親切感。
-5. 若玩家問到與《燕雲十六聲》無關的問題，請禮貌地將對話引回遊戲相關內容。
+1. 語氣要帶有江湖氣息且親切客氣，稱呼玩家為「俠士」。
+2. 回答開頭可以偶爾提到「七巧閣」或「涼涼」。
+3. 對於你不確定的細節，請禮貌地告知並建議俠士諮詢遊戲官網或官方討論區。
+4. 使用繁體中文回答，適當使用表情符號。
+5. 若問到與遊戲無關的問題，請禮貌地繞回遊戲內容。
 """
 
 model = genai.GenerativeModel(
@@ -50,19 +51,23 @@ def chat():
         return jsonify({"error": "No message provided"}), 400
     
     if not API_KEY:
-        return jsonify({"response": "抱歉，系統尚未配置 API 金鑰，請聯繫管理員。🤖"}), 200
+        return jsonify({"response": "抱歉，七巧閣尚未配置密鑰，無法聯繫涼涼。"} ), 200
 
     try:
         chat_session = model.start_chat(history=[])
         response = chat_session.send_message(user_message)
         
+        # 確保獲取到文本回應（處理安全過濾器可能導致的空回應）
+        ai_reply = response.text if response.text else "涼涼正在閉關修煉中，請稍後再試。"
+        
         return jsonify({
-            "response": response.text,
+            "response": ai_reply,
             "status": "success"
         })
     except Exception as e:
-        print(f"Error: {str(e)}")
-        return jsonify({"error": "系統發生錯誤，請稍後再試。"}), 500
+        print(f"DEBUG_ERROR: {str(e)}")
+        # 將具體錯誤回傳給前端方便調試
+        return jsonify({"error": f"涼涼遇到點小麻煩：{str(e)}"}), 500
 
 if __name__ == '__main__':
     # 獲取雲端平台提供的連接埠，預設為 5000
