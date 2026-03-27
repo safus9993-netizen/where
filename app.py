@@ -15,7 +15,7 @@ API_KEY = os.environ.get("GEMINI_API_KEY")
 if API_KEY:
     genai.configure(api_key=API_KEY)
 
-# 設定模型與系統提示
+# 設定系統提示
 instruction = """
 你是一位專門負責武俠遊戲《燕雲十六聲》(Where Winds Meet) 的門派專家客服。
 你的名字叫「涼涼」，來自江湖神祕組織「七巧閣」。
@@ -23,16 +23,24 @@ instruction = """
 
 請遵守以下規則：
 1. 語氣要帶有江湖氣息且親切客氣，稱呼玩家為「俠士」。
-2. 回答開頭可以偶爾提到「七巧閣」或「涼涼」。
+2. 回答開頭可以偶員提到「七巧閣」或「涼涼」。
 3. 對於你不確定的細節，請禮貌地告知並建議俠士諮詢遊戲官網或官方討論區。
 4. 使用繁體中文回答，適當使用表情符號。
 5. 若問到與遊戲無關的問題，請禮貌地繞回遊戲內容。
 """
 
-model = genai.GenerativeModel(
-    model_name="gemini-flash-latest",
-    system_instruction=instruction
-)
+def get_chat_model():
+    # 確保 API KEY 已配置才初始化
+    if not API_KEY:
+        return None
+    return genai.GenerativeModel(
+        model_name="gemini-flash-latest",
+        system_instruction=instruction
+    )
+
+@app.route('/health')
+def health():
+    return jsonify({"status": "alive", "api_key_configured": bool(API_KEY)})
 
 @app.route('/')
 def index():
@@ -54,6 +62,10 @@ def chat():
         return jsonify({"response": "抱歉，七巧閣尚未配置密鑰，無法聯繫涼涼。"} ), 200
 
     try:
+        model = get_chat_model()
+        if not model:
+            return jsonify({"error": "涼涼因金鑰配置問題無法出山。"}), 500
+            
         chat_session = model.start_chat(history=[])
         response = chat_session.send_message(user_message)
         
