@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>燕雲攻略請問我</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <main class="chat-container">
+        <header class="chat-header">
+            <div class="header-info">
+                <div class="avatar">
+                    <i class="fas fa-robot"></i>
+                    <span class="status-indicator"></span>
+                </div>
+                <div class="title-wrapper">
+                    <h1>AI 智能客服</h1>
+                    <p class="status-text">在線服務中</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="clear-chat" title="清除對話"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </header>
+
+        <section id="chat-messages" class="chat-messages">
+            <!-- 這裡是對話內容 -->
+            <div class="message ai-message">
+                <div class="message-content">
+                    您好！我是您的 AI 智能助理。請問今天有什麼可以幫您的？
+                </div>
+                <div class="message-time">剛剛</div>
+            </div>
+        </section>
+
+        <footer class="chat-footer">
+            <div class="input-wrapper">
+                <textarea id="user-input" placeholder="請輸入您的問題..." rows="1"></textarea>
+                <button id="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            <p class="footer-note">AI 可能會產生不準確的信息，僅供參考。</p>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
