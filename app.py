@@ -65,4 +65,6 @@ def chat():
         return jsonify({"error": "系統發生錯誤，請稍後再試。"}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # 獲取雲端平台提供的連接埠，預設為 5000
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
